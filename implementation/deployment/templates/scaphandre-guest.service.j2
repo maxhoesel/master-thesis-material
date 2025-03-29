@@ -1,0 +1,8 @@
+[Unit]
+Description=Scaphandre Guest VM Power Exporter
+
+[Service]
+ExecStart=/usr/local/bin/scaphandre --vm prometheus -p 8081
+
+[Install]
+WantedBy=multi-user.target

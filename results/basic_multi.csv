@@ -1,0 +1,8 @@
+WORKLOAD,IPMI Power,RAPL Power,Attributable (RAPL),Attributed (Scaphandre),Node Power (Kepler),Workload Pods (Kepler)
+Static,291,80,0,0,0,0
+2n2c,325,105,24.9,20.8,20.6,7.43
+2n4c,334,117,30.6,33.4,33.3,15.7
+4n4c,372,143,63.2,60.1,60.4,33.1
+3n8c,407,170,89.6,87.0,86.8,59.8
+4n8c,434,195,115,112,112,77
+4n16c,559,282,202,199,197,158

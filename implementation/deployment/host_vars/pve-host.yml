@@ -1,0 +1,9 @@
+# Path to the custom scaphandre binary to use
+scaphandre_bin_url:
+scaphandre_host_vmids:
+  - 21511
+  - 21521
+  - 21522
+  - 21523
+  - 21524
+static_power: 80

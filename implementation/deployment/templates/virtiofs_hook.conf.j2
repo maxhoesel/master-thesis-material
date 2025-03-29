@@ -1,0 +1,3 @@
+{% for vm in scaphandre_host_vmids | d([]) %}
+{{ vm }}: /var/lib/libvirt/scaphandre/{{ vm }}
+{% endfor %}

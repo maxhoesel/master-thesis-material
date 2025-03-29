@@ -1,0 +1,108 @@
+- name: Install scaphandre on PVE host
+  hosts: krth_pve_hac2_servers
+  become: true
+  handlers:
+    - name: Restart Scaphandre Passthrough
+      ansible.builtin.systemd:
+        name: scaphandre-qemu.service
+        state: restarted
+    - name: Restart scaphandre Host
+      ansible.builtin.systemd:
+        name: scaphandre-host.service
+        state: restarted
+  tasks:
+    - name: Scaphandre binary is present
+      ansible.builtin.get_url:
+        url: "{{ scaphandre_bin_url }}"
+        dest: /usr/local/bin/scaphandre
+        owner: root
+        group: root
+        mode: "755"
+      notify:
+        - Restart Scaphandre Passthrough
+        - Restart scaphandre Host
+
+    - name: IPMITool is installed
+      ansible.builtin.package:
+        name: ipmitool
+
+    - name: Scaphandre passthrough path is present
+      ansible.builtin.file:
+        path: /var/lib/libvirt/scaphandre/
+        state: directory
+        owner: root
+        group: root
+        mode: "755"
+
+    - name: Scaphandre passthrough systemd unit is present
+      ansible.builtin.template:
+        src: scaphandre-qemu.service.j2
+        dest: /etc/systemd/system/scaphandre-qemu.service
+        owner: root
+        group: root
+        mode: "644"
+      notify: Restart Scaphandre Passthrough
+
+    - name: Virtiofs is installed
+      ansible.builtin.apt:
+        name: virtiofsd
+
+    - name: Snippets directory exists
+      ansible.builtin.file:
+        path: /var/lib/vz/snippets/
+        owner: root
+        group: root
+        mode: "755"
+        state: directory
+
+    - name: Virtiofs hookscript is installed
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/Drallas/Virtio-fs-Hookscript/f0347014a8e2a44b0f3664b4373af3ed1075c4d9/Script/virtiofs_hook.pl"
+        dest: /var/lib/vz/snippets/
+        owner: root
+        group: root
+        mode: "755"
+
+    - name: Virtiofs config is installed
+      ansible.builtin.template:
+        src: virtiofs_hook.conf.j2
+        dest: /var/lib/vz/snippets/virtiofs_hook.conf
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Scaphandre passthrough systemd unit is enabled and started
+      ansible.builtin.systemd:
+        name: scaphandre-qemu.service
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: scaphandre tmpfs is setup for each VM
+      ansible.posix.mount:
+        path: "/var/lib/libvirt/scaphandre/{{ item }}"
+        fstype: tmpfs
+        src: "tmpfs_scaphandre_{{ item }}"
+        opts: size=10m
+        state: present
+      loop: "{{ scaphandre_host_vmids }}"
+
+    - name: Hookscript is set for VMs # noqa no-changed-when
+      ansible.builtin.command: qm set {{ item }} --hookscript local:snippets/virtiofs_hook.pl
+      loop: "{{ scaphandre_host_vmids }}"
+
+    - name: Scaphandre Host unit is installed
+      ansible.builtin.template:
+        src: scaphandre-host.service.j2
+        dest: /etc/systemd/system/scaphandre-host.service
+        owner: root
+        group: root
+        mode: "644"
+      notify: Restart scaphandre Host
+
+    - name: Scaphandre Host systemd unit is enabled and started
+      ansible.builtin.systemd:
+        name: scaphandre-host.service
+        state: started
+        enabled: true
+        daemon_reload: true

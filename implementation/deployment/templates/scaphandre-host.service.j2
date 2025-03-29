@@ -1,0 +1,8 @@
+[Unit]
+Description=Scaphandre Host Power Exporter
+
+[Service]
+ExecStart=/usr/local/bin/scaphandre{% if static_power|d("") %} --static-power {{ static_power }}{% endif %} prometheus --qemu -p 8081 --ipmi
+
+[Install]
+WantedBy=multi-user.target

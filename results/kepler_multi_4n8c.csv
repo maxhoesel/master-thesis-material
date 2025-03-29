@@ -1,0 +1,5 @@
+NODE,Node Power (Kepler Estimate),Workload Pod (Kepler Estimate), Node Power stddev, Workload Pod stddev
+Node 1,59,62,7,5
+Node 2,25,40,7,9
+Node 3,31,34,4,6
+Node 4,29,32,8,14

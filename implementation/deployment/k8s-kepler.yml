@@ -1,0 +1,48 @@
+- name: Install Kepler
+  hosts: krth-qhe8-tst
+  gather_facts: false
+  tasks:
+    - name: Kepler imagePullSecret is present
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig_file }}"
+        template: templates/imagePullSecret-kepler.yaml.j2
+        apply: true
+      delegate_to: localhost
+
+    - name: Install Prometheus Node Exporter
+      kubernetes.core.helm:
+        kubeconfig: "{{ kubeconfig_file }}"
+        name: prometheus-node-exporter
+        chart_repo_url: https://prometheus-community.github.io/helm-charts
+        chart_ref: prometheus-node-exporter
+        chart_version: 4.43.1
+        namespace: monitoring
+        wait: true
+      delegate_to: localhost
+
+    - name: Install Kepler helm chart
+      kubernetes.core.helm:
+        kubeconfig: "{{ kubeconfig_file }}"
+        name: kepler
+        chart_ref: charts/kepler-helm-chart/chart/kepler
+        namespace: "monitoring"
+        wait: true
+        values:
+          image:
+            repository: "{{ kepler_image }}"
+            tag: "{{ kepler_image_tag }}"
+          service:
+            port: 33413
+          imagePullSecrets:
+            - name: kepler-image-pull
+          extraEnvVars:
+            RAPL_PATH: /var/scaphandre
+          extraVolumes:
+            - name: var-scaphandre
+              hostPath:
+                path: /var/scaphandre
+                type: Directory
+          extraVolumeMounts:
+            - name: var-scaphandre
+              mountPath: /var/scaphandre
+      delegate_to: localhost

@@ -1,0 +1,11 @@
+[Unit]
+Description=Mount virtiofs for scaphandre
+
+[Mount]
+What={{ scaphandre_guest_vmid }}-{{ scaphandre_guest_vmid }}
+Where=/var/scaphandre
+Type=virtiofs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target

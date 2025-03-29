@@ -1,0 +1,5 @@
+NODE,Attributed (Scaphandre),Node Power,Workload Pod, Noise Pod, Workload stddev, Noise stddev
+Node 1,78.2,76.6,31.4,31.6,7.48,8.17
+Node 2,27.4,27.1,20.4,0,3.2,0
+Node 3,27.2,26.7,19.9,0,3.20,0
+Node 4,26.7,26.5,19.2,0,2.73,0

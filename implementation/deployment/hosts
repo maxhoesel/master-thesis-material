@@ -1,0 +1,7 @@
+[pve_servers:vars]
+ansible_user=root
+
+[pve_servers:children]
+pve-host ansible_host=your.server.tld
+# virtual host to talk to the Kubernetes cluster
+k8s-cluster kubeconfig_file=.kube/config

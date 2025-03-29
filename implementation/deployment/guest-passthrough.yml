@@ -1,0 +1,65 @@
+- name: Mount Scaphandre virtiofs on guests
+  hosts: krth_qhe8_nodes_tst
+  become: true
+  handlers:
+  tasks:
+    - name: Scphandre guest virtiofs mount unit is installed
+      ansible.builtin.template:
+        src: var-scaphandre.mount.j2
+        dest: /etc/systemd/system/var-scaphandre.mount
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Scaphandre guest virtiofs mount directory exists
+      ansible.builtin.file:
+        path: /var/scaphandre
+        state: directory
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Scaphandre guest virtiofs mount is running and enabled
+      ansible.builtin.systemd:
+        name: var-scaphandre.mount
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: Ensure Full kernel is installed to enable eBPF
+      ansible.builtin.apt:
+        name:
+          - linux-generic
+          - linux-headers-generic
+      register: _kepler_server_kernel_install
+    - name: Ensure KVM kernel is uninstalled (<=22.04)
+      ansible.builtin.apt:
+        name:
+          - linux-kvm
+          - "linux-image*-kvm"
+          - "linux-kvm-headers-*"
+          - "linux-modules*-kvm"
+          - "linux-headers*-kvm"
+        state: absent
+        autoremove: true
+        purge: true
+      register: _kepler_server_kernel_uninstall
+      when: ansible_distribution_version is version('24.04','lt')
+    - name: Ensure virtual kernel is uninstalled (>=24.04)
+      ansible.builtin.apt:
+        name:
+          - linux-virtual
+          - "linux-image*-virtual"
+          - "linux-headers*-virtual"
+        state: absent
+        autoremove: true
+        purge: true
+      register: _kepler_server_kernel_uninstall
+      when: ansible_distribution_version is version('24.04','ge')
+
+    - name: Inform that reboot may be required # noqa no-handler
+      ansible.builtin.debug:
+        msg: >
+          Kernel was installed or updated -
+          if the kepler pods are crashing due to no such file or directory errors on ePBF, reboot this node!
+      when: _kepler_server_kernel_install.changed or _kepler_server_kernel_uninstall.changed

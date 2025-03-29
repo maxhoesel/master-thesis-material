@@ -1,0 +1,10 @@
+[Unit]
+Description=Scaphandre QEMU Power Exporter
+Requires=pve-guests.service
+After=pve-guests.service
+
+[Service]
+ExecStart=/usr/local/bin/scaphandre{% if static_power|d("") %} --static-power {{ static_power }}{% endif %} qemu
+
+[Install]
+WantedBy=multi-user.target

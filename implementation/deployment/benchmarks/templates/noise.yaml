@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bench-workload
+  namespace: bench
+spec:
+  replicas: $REPLICAS
+  selector:
+    matchLabels:
+      app: bench-workload
+  template:
+    metadata:
+      labels:
+        app: bench-workload
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: bench-workload
+      containers:
+      - name: bench-workload
+        image: wdhif/stress-ng
+        args: ["--cpu", "$WORKERS"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noise-workload
+  namespace: bench
+spec:
+  replicas: $NOISE_REPLICAS
+  selector:
+    matchLabels:
+      app: noise-workload
+  template:
+    metadata:
+      labels:
+        app: noise-workload
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: noise-workload
+      containers:
+      - name: noise-workload
+        image: wdhif/stress-ng
+        args: ["--cpu", "$NOISE_WORKERS"]
+---

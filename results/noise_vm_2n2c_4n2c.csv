@@ -1,0 +1,9 @@
+NODE,Attributed (Scaphandre),Node Power (Kepler),Workload Pod (Kepler)
+Node 1,7.87,7.76,3
+Node 2,7.86,7.70,3.95
+Node 3,1.55,1.57,0
+Node 4,1.41,1.41,0
+Noise 1,7.02,0,0
+Noise 2,6.98,0,0
+Noise 3,6.86,0,0
+Noise 4,6.86,0,0

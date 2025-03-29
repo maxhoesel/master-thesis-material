@@ -1,0 +1,6 @@
+[submodule "implementation/scaphandre"]
+	path = implementation/scaphandre
+	url = https://github.com/maxhoesel/master-thesis-scaphandre
+[submodule "implementation/kepler"]
+	path = implementation/kepler
+	url = https://github.com/maxhoesel/master-thesis-kepler

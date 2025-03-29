@@ -1,0 +1,7 @@
+WORKLOAD,IPMI Power,RAPL Power,Attributed (Scaphandre),Node Power (Kepler)
+Static,3,0.48,0,0,0
+2n2c_4n2c,2.78,1.06,0.533,2.98
+2n2c_4n8c,2.91,1.28,0.859,7.19
+4n8c_1n2c,3.67,1.22,0.905,10.3
+4n8c_4n4c,3.59,0.743,0.669,17.1
+4n8c_1n16c,3.81,1.43,1.12,19.4

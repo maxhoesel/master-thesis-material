@@ -1,0 +1,16 @@
+[Unit]
+Description=Mount virtiofs for scaphandre
+After=network.target
+
+[Mount]
+{% if scaphandre_guest_vmid is defined %}
+What={{ scaphandre_guest_vmid }}-{{ scaphandre_guest_vmid }}
+{% else %}
+What=scaphandre
+{% endif %}
+Where=/sys/class/powercap
+Type=virtiofs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target

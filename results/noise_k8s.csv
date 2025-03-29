@@ -1,0 +1,7 @@
+WORKLOAD,IPMI Power,RAPL Power,Attributable (RAPL),Attributed (Scaphandre),Node Power (Kepler),Workload Pods (Kepler),Noise Pods (Kepler),Total Pods,Non-Noise Workload Pods
+Static,290,80,0,0,0,0,0,0,0
+2n2c_4n2c,351,130,50.4,47.6,47.1,7.37,15.75,23,7.43
+2n2c_4n8c,452,207,127,124,121,6.89,57,64,7.43
+4n8c_1n2c,451,202,122,119,117,73.3,7.57,80.8,77
+4n8c_4n4c,504,243,163,160,158,84.4,38.72,123.12,77
+4n8c_1n16c,505,243,163,159,157,90.9,31.6,122,77
